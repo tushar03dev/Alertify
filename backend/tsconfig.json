@@ -112,7 +112,7 @@
   },
   "include": [
     "src/**/*.ts", // This should cover all your TypeScript files
-    "src/types.ts", // Explicitly include if necessary
+    "src/types.ts" // Explicitly include if necessary
   ],
   "exclude": ["node_modules", "dist"]
 }
