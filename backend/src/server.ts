@@ -4,6 +4,8 @@ import authRoutes from './routes/authRoutes';
 import dotenv from 'dotenv';
 import connectDB from './config/db';
 import multer from 'multer';
+import './types'
+
 
 dotenv.config(); // Load environment variables from .env file
 
