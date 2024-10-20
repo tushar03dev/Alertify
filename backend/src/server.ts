@@ -20,8 +20,8 @@ const upload = multer(); // You can configure multer to store files if needed
 // Middleware to parse form-data
 app.use(upload.none()); // This is used when you're not uploading any files, just data
 
-// Schedule the cron job to run every 3 minutes
-cron.schedule('*/3 * * * *', () => {
+// Schedule the cron job to run every minute
+cron.schedule('* * * * *', () => {
     console.log('Checking website status...');
     roundRobinCheck();
 });

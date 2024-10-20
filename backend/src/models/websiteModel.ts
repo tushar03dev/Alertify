@@ -12,6 +12,7 @@ export interface IWebsite extends Document {
         status: string;
         timestamp: Date;
     }[];
+    _id: mongoose.Types.ObjectId;
 }
 
 const WebsiteSchema: Schema = new Schema({

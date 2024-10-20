@@ -5,7 +5,7 @@ import {User} from '../models/userModel';
 import dotenv from 'dotenv';
 import {Website} from "../models/websiteModel";
 import mongoose from "mongoose";
-import {Bin} from "../models/binModel";
+
 
 dotenv.config();
 
@@ -87,12 +87,6 @@ export const websiteRegister = async (req: Request, res: Response, next: NextFun
 
         // Save the website to the database
         const savedWebsite = await newWebsite.save();
-
-        // This is where the website gets added to the Bin automatically
-        await new Bin({
-            websiteUrl: savedWebsite.url,
-            website : savedWebsite._id,
-        }).save();
 
         // Add the website's ObjectId to the user's websites array and save the updated user
         req.user.websites.push(savedWebsite._id as mongoose.Types.ObjectId);
