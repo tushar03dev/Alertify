@@ -6,7 +6,7 @@ import connectDB from './config/db';
 import multer from 'multer';
 import './types'
 import cron from 'node-cron'
-import {roundRobinCheck} from "./controllers/pingController";
+import {roundRobinCheck} from "./controllers/pingController"
 
 dotenv.config(); // Load environment variables from .env file
 
