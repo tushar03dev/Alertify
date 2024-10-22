@@ -21,4 +21,3 @@ router.delete('/delete-website', authenticateToken,deleteWebsite);
 router.delete('/delete-trends', authenticateToken,deleteAllTrends);
 
 export default router;
-

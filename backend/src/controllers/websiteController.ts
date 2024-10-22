@@ -1,7 +1,6 @@
 import  { Request, Response, NextFunction } from 'express';
 import {IWebsite, Website} from "../models/websiteModel";
 import mongoose from "mongoose";
-import {resolvePtr} from "node:dns";
 
 
 export const websiteRegister = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
