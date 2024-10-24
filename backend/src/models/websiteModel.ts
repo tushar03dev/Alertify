@@ -12,6 +12,10 @@ export interface IWebsite extends Document {
         status: string;
         timestamp: Date;
     }[];
+    sslStatus: {
+        status: string; // 'valid', 'invalid', or 'not found'
+        checkedAt: Date;
+    };
     _id: mongoose.Types.ObjectId;
 }
 
@@ -28,7 +32,11 @@ const WebsiteSchema: Schema = new Schema({
             status: { type: String, enum: ['up', 'down'] },
             timestamp: { type: Date }
         }
-    ]
+    ],
+    sslStatus: {
+        status: { type: String, enum: ['valid', 'invalid', 'not found'], default: 'not found' },
+        checkedAt: { type: Date, default: Date.now }
+    }
 });
 
 export const Website = mongoose.model<IWebsite>('Website', WebsiteSchema);

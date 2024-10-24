@@ -6,7 +6,7 @@ import connectDB from './config/db';
 import multer from 'multer';
 import './types'
 import cron from 'node-cron'
-import {batchCheck} from "./controllers/pingController";
+import {batchCheck} from "./controllers/batchController";
 import websiteRoutes from "./routes/websiteRoutes";
 import otpRoutes from "./routes/otpRoutes";
 
@@ -35,6 +35,7 @@ cron.schedule('*/3 * * * *', () => {
             console.error('Error during batch check:', error);
         });
 });
+
 
 // Use the auth routes
 app.use('/api/auth', authRoutes); // Mounts the auth routes
