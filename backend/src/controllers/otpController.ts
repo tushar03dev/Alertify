@@ -29,8 +29,8 @@ export const verifyOTP = async (token: string, otp: string) => {
             return { success: false, message: 'Token and OTP are required' };
         }
 
-        // Verify JWT token and extract the OTP
         const decoded: any = jwt.verify(token, process.env.JWT_SECRET as string);
+        console.log('Decoded OTP:', decoded.otp); // Debugging log
 
         if (decoded.otp === otp) {
             return { success: true, message: 'OTP verified successfully' };
@@ -38,6 +38,7 @@ export const verifyOTP = async (token: string, otp: string) => {
             return { success: false, message: 'Invalid OTP' };
         }
     } catch (error: unknown) {
+        console.error('Error in verifyOTP:', error);
         return { success: false, message: 'Invalid or expired token' };
     }
 };

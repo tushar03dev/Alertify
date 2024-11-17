@@ -4,7 +4,8 @@ import {
     deleteWebsite,
     logWebsiteInfo,
     updateWebsite,
-    websiteRegister
+    websiteRegister,
+    getUserWebsites
 } from "../controllers/websiteController";
 import {Router} from "express";
 
@@ -20,4 +21,5 @@ router.delete('/delete-website', authenticateToken,deleteWebsite);
 
 router.delete('/delete-trends', authenticateToken,deleteAllTrends);
 
+router.get('/websites', authenticateToken, getUserWebsites);
 export default router;

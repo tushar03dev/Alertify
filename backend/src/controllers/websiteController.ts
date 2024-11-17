@@ -3,6 +3,28 @@ import {IWebsite, Website} from "../models/websiteModel";
 import mongoose from "mongoose";
 
 
+export const getUserWebsites = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+        if (!req.user || !req.user._id) {
+            res.status(401).json({ message: 'Unauthorized: No user found.' });
+            return;
+        }
+
+        // Assert req.user._id as a string
+        const userId = new mongoose.Types.ObjectId(req.user._id as string);
+
+        const userWebsites = await Website.find({ userId });
+
+        console.log('Query for user websites:', { userId });
+        console.log('Result from database:', userWebsites);
+
+        res.status(200).json({ websites: userWebsites });
+    } catch (error) {
+        console.error('Error fetching user websites:', error);
+        res.status(500).json({ message: 'Failed to fetch websites. Please try again later.' });
+    }
+};
+
 export const websiteRegister = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         // Extract website details from the request body

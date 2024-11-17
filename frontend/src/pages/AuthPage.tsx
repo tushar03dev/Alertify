@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import '../styles/authPage.css';
+// const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000';
+const API_BASE_URL = 'http://localhost:5000';
 
 const AuthPage: React.FC = () => {
     const [isLogin, setIsLogin] = useState(true);
@@ -23,7 +25,7 @@ const AuthPage: React.FC = () => {
         if (isLogin) {
             // Handle login
             try {
-                const response = await axios.post('/api/auth/login', { email, password });
+                const response = await axios.post(`${API_BASE_URL}/api/auth/sign-in`, { email, password });
 
                 if (response.data.token) {
                     // Save the JWT token to localStorage
@@ -40,16 +42,19 @@ const AuthPage: React.FC = () => {
         } else {
             // Send the OTP to backend and get the OTP token for verification
             try {
-                const response = await axios.post('/api/auth/sign-up', { email, password, name });
+                const response = await axios.post(`${API_BASE_URL}/api/auth/sign-up`, { email, password, name });
+
                 setOtpToken(response.data.otpToken);
                 alert('OTP sent to your email. Please enter the OTP to complete sign-up.');
             } catch (error: unknown) {
                 if (axios.isAxiosError(error)) {
-                    setErrorMessage(error.response?.data?.message || 'Error sending OTP, please try again.');
+                    setErrorMessage(error.response?.data?.message || 'Error logging in.');
                 } else {
-                    setErrorMessage('An unexpected error occurred, please try again.');
+                    setErrorMessage('An unexpected error occurred.');
                 }
             }
+
+
         }
         setLoading(false); // Set loading state to false
     };
@@ -59,7 +64,7 @@ const AuthPage: React.FC = () => {
         setLoading(true); // Set loading state to true
 
         try {
-            const response = await axios.post('/api/otp/verify', { otpToken, otp });
+            const response = await axios.post(`${API_BASE_URL}/otp/verify`, { otpToken, otp });
 
             if (response.data.token) {
                 // Successfully signed up and received JWT token

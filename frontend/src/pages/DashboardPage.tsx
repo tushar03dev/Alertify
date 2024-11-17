@@ -1,34 +1,35 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom'; // Use useNavigate instead of useHistory
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../styles/dashboardPage.css';
+
+const API_BASE_URL = 'http://localhost:5000';
 
 const DashboardPage: React.FC = () => {
     const [websites, setWebsites] = useState<any[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string>('');
-    const navigate = useNavigate(); // Use useNavigate for redirection
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchWebsites = async () => {
             try {
                 const token = localStorage.getItem('token');
-
                 if (!token) {
                     setError('User is not authenticated.');
                     return;
                 }
 
-                const response = await axios.get('/api/websites', {
+                const response = await axios.get(`${API_BASE_URL}/api/websites`, {
                     headers: {
-                        Authorization: `Bearer ${token}`,
+                        Authorization: `${token}`,
                     },
                 });
 
-                setWebsites(response.data);
+                setWebsites(response.data.websites);
             } catch (error) {
-                setError('Error fetching websites: ');
-                // setError('Error fetching websites: ' + (error.response?.data?.message || error.message));
+                console.error('Error fetching websites:', error);
+                setError('Failed to load websites. Please try again.');
             } finally {
                 setLoading(false);
             }
@@ -38,9 +39,7 @@ const DashboardPage: React.FC = () => {
     }, []);
 
     const handleLogout = () => {
-        // Clear the token from localStorage
         localStorage.removeItem('token');
-        // Redirect the user to the login page using useNavigate
         navigate('/login');
     };
 
@@ -59,22 +58,19 @@ const DashboardPage: React.FC = () => {
             </div>
             <div>
                 {loading ? (
-                    <p className="loading-message">Loading...</p>
+                    <p>Loading...</p>
                 ) : error ? (
                     <p className="error-message">{error}</p>
                 ) : websites.length > 0 ? (
-                    <div className="website-list">
-                        {websites.map((website: any) => (
-                            <div key={website.id} className="website-card">
-                                <p className="website-url">{website.url}</p>
-                                <p className={`website-status ${website.status === 'Down' ? 'down' : ''}`}>
-                                    Status: {website.status}
-                                </p>
-                            </div>
+                    <ul className="website-list">
+                        {websites.map((website) => (
+                            <li key={website._id} className="website-item">
+                                {website.websiteName} - {website.url}
+                            </li>
                         ))}
-                    </div>
+                    </ul>
                 ) : (
-                    <p className="no-websites">No websites added yet.</p>
+                    <p>No websites found.</p>
                 )}
             </div>
         </div>

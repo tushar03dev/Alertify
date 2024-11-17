@@ -7,3 +7,12 @@ declare global {
         }
     }
 }
+// import { JwtPayload } from 'jsonwebtoken';
+//
+// declare global {
+//     namespace Express {
+//         interface Request {
+//             user?: JwtPayload | { _id: string }; // Define the type of `req.user`
+//         }
+//     }
+// }

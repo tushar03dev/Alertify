@@ -10,12 +10,17 @@ import {batchCheck} from "./controllers/batchController";
 import websiteRoutes from "./routes/websiteRoutes";
 import otpRoutes from "./routes/otpRoutes";
 
+import cors from 'cors';
+
+
+
 dotenv.config(); // Load environment variables from .env file
 
 const app = express();
 
 // Middleware
 app.use(express.json()); // Parses incoming requests with JSON payloads
+app.use(cors());
 
 // Middleware to handle form-data
 const upload = multer();
@@ -25,16 +30,16 @@ app.use(upload.none());
 
 
 //Schedule the cron job to run every 3 minutes
-cron.schedule('*/3 * * * *', () => {
-    console.log('Checking website status...');
-    batchCheck()
-        .then(() => {
-            console.log('Batch check completed successfully.');
-        })
-        .catch((error) => {
-            console.error('Error during batch check:', error);
-        });
-});
+// cron.schedule('*/3 * * * *', () => {
+//     console.log('Checking website status...');
+//     batchCheck()
+//         .then(() => {
+//             console.log('Batch check completed successfully.');
+//         })
+//         .catch((error) => {
+//             console.error('Error during batch check:', error);
+//         });
+// });
 
 // Connect To MongoDB
 connectDB();
