@@ -1,0 +1,134 @@
+/* AuthPage.css */
+
+/* Container for the page, applied only to AuthPage */
+.auth-page-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f7fafc;
+    padding: 20px;
+}
+
+.auth-form-container {
+    background-color: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    width: 100%;
+    max-width: 400px;
+    padding: 2rem;
+}
+
+.auth-page-container h2 {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #2b2b2b;
+    margin-bottom: 1.5rem;
+}
+
+.auth-form-container label {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.auth-form-container input {
+    width: 100%;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+.auth-form-container input:focus {
+    border-color: #4c51bf;
+}
+
+.auth-form-container button {
+    width: 100%;
+    padding: 1rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.auth-form-container button:disabled {
+    cursor: not-allowed;
+    background-color: #b0bec5;
+}
+
+.auth-form-container button.bg-blue-500 {
+    background-color: #4c51bf;
+    color: white;
+}
+
+.auth-form-container button.bg-blue-500:hover {
+    background-color: #434190;
+}
+
+.auth-form-container button.bg-green-500 {
+    background-color: #38a169;
+    color: white;
+}
+
+.auth-form-container button.bg-green-500:hover {
+    background-color: #2f855a;
+}
+
+.auth-form-container button.bg-blue-500:disabled,
+.auth-form-container button.bg-green-500:disabled {
+    background-color: #b0bec5;
+}
+
+.auth-form-container button:focus {
+    outline: none;
+}
+
+.auth-form-container .mt-4 {
+    margin-top: 1rem;
+}
+
+.auth-form-container .text-red-500 {
+    color: #e53e3e;
+}
+
+.auth-form-container .text-blue-500 {
+    color: #3182ce;
+}
+
+.auth-form-container .text-blue-500:hover {
+    text-decoration: underline;
+}
+
+.auth-form-container .underline {
+    text-decoration: underline;
+}
+
+.auth-form-container .space-y-4 > * + * {
+    margin-top: 1.5rem;
+}
+
+@media (max-width: 768px) {
+    .auth-form-container {
+        padding: 1rem;
+        width: 100%;
+    }
+
+    .auth-form-container h2 {
+        font-size: 1.5rem;
+    }
+
+    .auth-form-container input {
+        padding: 0.75rem;
+    }
+
+    .auth-form-container button {
+        padding: 0.75rem;
+    }
+}

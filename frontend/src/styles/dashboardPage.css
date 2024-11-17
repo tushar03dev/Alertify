@@ -1,0 +1,63 @@
+/* DashboardPage.css */
+
+/* Container for the entire page */
+.dashboard-page-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 16px;
+}
+
+/* Title */
+.dashboard-title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+/* Add Website Button */
+.add-website-button {
+    background-color: #38a169; /* Tailwind green-500 */
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: bold;
+    text-align: center;
+    display: inline-block;
+    transition: background-color 0.3s ease;
+}
+
+.add-website-button:hover {
+    background-color: #2f855a; /* Tailwind green-600 */
+}
+
+/* Websites List */
+.website-card {
+    border: 1px solid #e2e8f0; /* Light gray border */
+    padding: 16px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.website-url {
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.website-status {
+    font-size: 1rem;
+    color: #38a169; /* Tailwind green-500 */
+}
+
+.website-status.down {
+    color: #e53e3e; /* Tailwind red-500 */
+}
+
+/* Empty State */
+.no-websites {
+    font-size: 1.25rem;
+    color: #4a5568; /* Tailwind gray-600 */
+}

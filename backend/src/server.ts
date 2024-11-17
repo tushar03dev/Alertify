@@ -36,6 +36,8 @@ cron.schedule('*/3 * * * *', () => {
         });
 });
 
+// Connect To MongoDB
+connectDB();
 
 // Use the auth routes
 app.use('/api/auth', authRoutes); // Mounts the auth routes
@@ -53,13 +55,9 @@ app.use((err: any, res: Response) => {
 });
 
 // Start the server
-const PORT = process.env.PORT || 5200;
-
-// Connect to MongoDB, then start the server
-connectDB().then(() => {
-    app.listen(PORT, () => {
-        console.log(`Server is running on port ${PORT}`);
-    });
+const PORT = process.env.PORT;
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
 });
 
 

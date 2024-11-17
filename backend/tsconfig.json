@@ -114,5 +114,13 @@
     "src/**/*.ts", // This should cover all your TypeScript files
     "src/types.ts" // Explicitly include if necessary
   ],
-  "exclude": ["node_modules", "dist"]
+  "exclude": ["node_modules", "dist"],
+  "paths": {
+    "config": ["src/config"],
+    "controllers": ["src/controllers"],
+    "middleware": ["src/middleware"],
+    "models": ["src/models"],
+    "routes": ["src/routes"]
+  }
+
 }
