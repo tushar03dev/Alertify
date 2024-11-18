@@ -6,6 +6,15 @@
     margin: 0 auto;
     padding: 16px;
 }
+.status-up {
+    color: green;
+    font-weight: bold;
+}
+
+.status-down {
+    color: red;
+    font-weight: bold;
+}
 
 /* Title */
 .dashboard-title {

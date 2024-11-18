@@ -1,234 +1,180 @@
-import  { Request, Response, NextFunction } from 'express';
-import {IWebsite, Website} from "../models/websiteModel";
-import mongoose from "mongoose";
+import { Request, Response, NextFunction } from 'express';
+import mongoose from 'mongoose';
+import { User } from '../models/userModel';
+import { Website } from '../models/websiteModel';
 
-
+// Fetch user's websites
 export const getUserWebsites = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-        if (!req.user || !req.user._id) {
-            res.status(401).json({ message: 'Unauthorized: No user found.' });
-            return;
-        }
+        const user = (req as any).user;
 
-        // Assert req.user._id as a string
-        const userId = new mongoose.Types.ObjectId(req.user._id as string);
-
-        const userWebsites = await Website.find({ userId });
-
-        console.log('Query for user websites:', { userId });
-        console.log('Result from database:', userWebsites);
-
-        res.status(200).json({ websites: userWebsites });
-    } catch (error) {
-        console.error('Error fetching user websites:', error);
-        res.status(500).json({ message: 'Failed to fetch websites. Please try again later.' });
-    }
-};
-
-export const websiteRegister = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    try {
-        // Extract website details from the request body
-        const { websiteName, url} = req.body;
-
-        // Check if all required fields are provided
-        if (!url || !websiteName) {
-            res.status(400).json({ message: 'Please provide all required fields: url and name' });
-            return;
-        }
-
-        const existingWebsite = await Website.findOne({url});
-        if (existingWebsite) {
-            res.status(400).send('Website already exists.');
-            return;
-        }
-
-        // Ensure req.user exists (i.e., authentication was successful)
-        if (!req.user) {
-            res.status(401).json({ message: 'Unauthorized: No user found.' });
-            return;
-        }
-
-        // Create a new Website document
-        const newWebsite = new Website({
-            websiteName,
-            url,
-            user: req.user._id  // Attach the authenticated user's ObjectId
-        });
-
-        // Save the website to the database
-        const savedWebsite = await newWebsite.save();
-
-        // Add the website's ObjectId to the user's websites array and save the updated user
-        req.user.websites.push(savedWebsite._id as mongoose.Types.ObjectId);
-        await req.user.save();
-
-        // Return success response
-        res.status(201).json({
-            message: 'Website registered successfully.',
-            website: savedWebsite
-        });
-    } catch (error) {
-        next(error);  // Pass any errors to the global error handler
-    }
-};
-
-export const deleteWebsite = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    try {
-        // Ensure the user is authenticated
-        const user = (req as any).user; // We attached the user in the middleware
         if (!user) {
             res.status(401).json({ message: 'Unauthorized: No user found.' });
             return;
         }
 
-        // Extract the website name from the request body
+        const websites = await Website.find({ user: user._id });
+        res.status(200).json({ websites });
+    } catch (error) {
+        console.error('Error fetching websites:', error);
+        next(error);
+    }
+};
+
+// Register a new website
+export const websiteRegister = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+        const user = (req as any).user;
+
+        if (!user) {
+            res.status(401).json({ message: 'Unauthorized: No user found.' });
+            return;
+        }
+
+        const { websiteName, url } = req.body;
+
+        if (!websiteName || !url) {
+            res.status(400).json({ message: 'Please provide website name and URL.' });
+            return;
+        }
+
+        const existingWebsite = await Website.findOne({ url, user: user._id });
+
+        if (existingWebsite) {
+            res.status(400).json({ message: 'Website already registered for this user.' });
+            return;
+        }
+
+        const newWebsite = new Website({ websiteName, url, user: user._id });
+        const savedWebsite = await newWebsite.save();
+
+        user.websites.push(savedWebsite._id);
+        await user.save();
+
+        res.status(201).json({ message: 'Website registered successfully.', website: savedWebsite });
+    } catch (error) {
+        console.error('Error registering website:', error);
+        next(error);
+    }
+};
+
+// Delete a website
+export const deleteWebsite = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+        const user = (req as any).user;
+
+        if (!user) {
+            res.status(401).json({ message: 'Unauthorized: No user found.' });
+            return;
+        }
+
         const { websiteName } = req.body;
 
-        // Ensure the website name is provided
         if (!websiteName) {
             res.status(400).json({ message: 'Please provide the website name to delete.' });
             return;
         }
 
-        // Find the website by its name and ensure it belongs to the authenticated user
-        const website = await Website.findOne({ websiteName, user: user._id });
+        const website = await Website.findOneAndDelete({ websiteName, user: user._id });
 
         if (!website) {
-            res.status(404).json({ message: 'Website not found or unauthorized access.' });
+            res.status(404).json({ message: 'Website not found or does not belong to this user.' });
             return;
         }
 
-        // Delete the website from the Website collection
-        await Website.findOneAndDelete({ websiteName, user: user._id });
-
-        // Remove the website from the user's websites array
-        user.websites = user.websites.filter(
-            (id: mongoose.Types.ObjectId) => id.toString() !== website._id.toString()
-        );
+        user.websites = user.websites.filter((id: mongoose.Types.ObjectId) => !id.equals(website._id));
         await user.save();
 
         res.status(200).json({ message: 'Website deleted successfully.' });
     } catch (error) {
-        next(error);  // Pass any errors to the global error handler
+        console.error('Error deleting website:', error);
+        next(error);
     }
 };
 
+// Update a website
 export const updateWebsite = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-        // Ensure the user is authenticated
-        const user = (req as any).user; // We attached the user in the middleware
+        const user = (req as any).user;
+
         if (!user) {
             res.status(401).json({ message: 'Unauthorized: No user found.' });
             return;
         }
 
-        // Extract the new website details from the request body
         const { websiteName, newUrl, newWebsiteName } = req.body;
 
-        // Ensure at least one field to update is provided
-        if (!newUrl && !newWebsiteName) {
-            res.status(400).json({ message: 'Please provide at least one field to update (newUrl or newWebsiteName).' });
+        if (!websiteName || (!newUrl && !newWebsiteName)) {
+            res.status(400).json({ message: 'Please provide the current website name and at least one field to update.' });
             return;
         }
 
-        // Find the website by its name and ensure it belongs to the authenticated user
         const website = await Website.findOne({ websiteName, user: user._id });
 
         if (!website) {
-            res.status(404).json({ message: 'Website not found or unauthorized access.' });
+            res.status(404).json({ message: 'Website not found or does not belong to this user.' });
             return;
         }
 
-        // Prepare the update object
-        const updateData: any = {};
-        if (newUrl) {
-            updateData.url = newUrl;
-        }
-        if (newWebsiteName) {
-            updateData.websiteName = newWebsiteName;
-        }
+        if (newUrl) website.url = newUrl;
+        if (newWebsiteName) website.websiteName = newWebsiteName;
 
-        // Update the website
-        await Website.findByIdAndUpdate(website._id, updateData, { new: true });
+        const updatedWebsite = await website.save();
 
-        res.status(200).json({ message: 'Website updated successfully.', website: { ...website.toObject(), ...updateData } });
+        res.status(200).json({ message: 'Website updated successfully.', website: updatedWebsite });
     } catch (error) {
-        next(error);  // Pass any errors to the global error handler
-    }
-};
-
-// Function to delete all trends of all websites
-export const deleteAllTrends = async (req: Request, res: Response, next: NextFunction) :Promise<void> => {
-    try {
-        // Update all websites to remove trends
-        const result = await Website.updateMany({}, { $set: { trends: [] } });
-
-        if (result.modifiedCount > 0) {
-             res.status(200).json({ message: 'All trends deleted successfully' });
-             return;
-        } else {
-             res.status(404).json({ message: 'No trends found to delete' });
-        }
-    } catch (error) {
+        console.error('Error updating website:', error);
         next(error);
     }
 };
 
+// Delete all trends for all websites
+export const deleteAllTrends = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+        const result = await Website.updateMany({}, { $set: { trends: [] } });
+
+        if (result.modifiedCount > 0) {
+            res.status(200).json({ message: 'All trends deleted successfully.' });
+        } else {
+            res.status(404).json({ message: 'No trends found to delete.' });
+        }
+    } catch (error) {
+        console.error('Error deleting trends:', error);
+        next(error);
+    }
+};
+
+// Log website info
 export const logWebsiteInfo = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-        // Extract the identifier (website name or URL) from the request body
         const { identifier } = req.body;
 
-        // Ensure an identifier is provided
         if (!identifier) {
             res.status(400).json({ message: 'Please provide a website name or URL to search.' });
             return;
         }
 
-        // Search for the website by either name or URL
-        const website: IWebsite | null = await Website.findOne({
-            $or: [
-                { websiteName: identifier },
-                { url: identifier }
-            ]
+        const website = await Website.findOne({
+            $or: [{ websiteName: identifier }, { url: identifier }],
         });
 
         if (!website) {
-            res.status(404).json({ message: `Website with name or URL '${identifier}' not found.` });
+            res.status(404).json({ message: `Website with identifier '${identifier}' not found.` });
             return;
         }
 
-        // Log website information
-        console.log(`Website Name: ${website.websiteName}`);
-        console.log(`Website URL: ${website.url}`);
-        console.log(`Current Status: ${website.currentStatus.status}`);
-        console.log(`Last Checked At: ${website.currentStatus.checkedAt}`);
-
-        // Log trends information
-        if (website.trends.length > 0) {
-            console.log('Trends:');
-            website.trends.forEach((trend, index) => {
-                console.log(`  Trend #${index + 1}:`);
-                console.log(`    Status: ${trend.status}`);
-                console.log(`    Timestamp: ${trend.timestamp}`);
-            });
-        } else {
-            console.log('No trends available.');
-        }
-
-        // Return a success message with website details in the response
         res.status(200).json({
-            message: 'Website information logged successfully',
+            message: 'Website information retrieved successfully.',
             website: {
                 websiteName: website.websiteName,
                 url: website.url,
                 currentStatus: website.currentStatus,
                 trends: website.trends,
-            }
+                sslStatus: website.sslStatus,
+            },
         });
-
-    } catch (error: unknown) {
-        console.error(`An error occurred while retrieving the website: ${(error as Error).message}`);
+    } catch (error) {
+        console.error('Error retrieving website info:', error);
         next(error);
     }
 };

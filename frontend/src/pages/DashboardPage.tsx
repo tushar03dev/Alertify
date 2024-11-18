@@ -11,31 +11,36 @@ const DashboardPage: React.FC = () => {
     const [error, setError] = useState<string>('');
     const navigate = useNavigate();
 
-    useEffect(() => {
-        const fetchWebsites = async () => {
-            try {
-                const token = localStorage.getItem('token');
-                if (!token) {
-                    setError('User is not authenticated.');
-                    return;
-                }
-
-                const response = await axios.get(`${API_BASE_URL}/api/websites`, {
-                    headers: {
-                        Authorization: `${token}`,
-                    },
-                });
-
-                setWebsites(response.data.websites);
-            } catch (error) {
-                console.error('Error fetching websites:', error);
-                setError('Failed to load websites. Please try again.');
-            } finally {
-                setLoading(false);
+    // Function to fetch website data
+    const fetchWebsites = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                setError('User is not authenticated.');
+                return;
             }
-        };
 
-        fetchWebsites();
+            const response = await axios.get(`${API_BASE_URL}/api/websites`, {
+                headers: {
+                    Authorization: `${token}`,
+                },
+            });
+
+            setWebsites(response.data.websites);
+            setError(''); // Clear previous errors if successful
+        } catch (error) {
+            console.error('Error fetching websites:', error);
+            setError('Failed to load websites. Please try again.');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // UseEffect to fetch websites initially and every 60 seconds
+    useEffect(() => {
+        fetchWebsites(); // Fetch initially
+        const intervalId = setInterval(fetchWebsites, 60000); // Fetch every 60 seconds
+        return () => clearInterval(intervalId); // Cleanup on component unmount
     }, []);
 
     const handleLogout = () => {
@@ -53,7 +58,7 @@ const DashboardPage: React.FC = () => {
             </div>
             <div className="mb-4">
                 <Link to="/add-website" className="add-website-button">
-                    Add New Website
+                    Alter Website
                 </Link>
             </div>
             <div>
@@ -65,7 +70,12 @@ const DashboardPage: React.FC = () => {
                     <ul className="website-list">
                         {websites.map((website) => (
                             <li key={website._id} className="website-item">
-                                {website.websiteName} - {website.url}
+                                <strong>{website.websiteName}</strong>: {website.url}
+                                <p>
+                                    Status: <span className={website.currentStatus.status === 'up' ? 'status-up' : 'status-down'}>
+                                        {website.currentStatus.status}
+                                    </span>
+                                </p>
                             </li>
                         ))}
                     </ul>
