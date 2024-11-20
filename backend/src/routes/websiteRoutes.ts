@@ -11,9 +11,9 @@ import {Router} from "express";
 
 const router = Router();
 
-router.get('/website-info',authenticateToken,logWebsiteInfo);
-
 router.post('/register-website', authenticateToken,websiteRegister);
+
+router.get('/website-info',authenticateToken,logWebsiteInfo);
 
 router.put('/update-website', authenticateToken,updateWebsite);
 

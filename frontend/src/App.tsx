@@ -7,7 +7,7 @@ import NavBar from './components/NavBar';
 import HomePage from './pages/HomePage';
 import AuthPage from './pages/AuthPage';
 import DashboardPage from './pages/DashboardPage';
-import AlterWebsite from './pages/AlterWebsite.tsx';
+import AddWebsitePage from './pages/AddWebsitePage';
 
 const App: React.FC = () => {
     return (
@@ -17,7 +17,7 @@ const App: React.FC = () => {
                 <Route path="/" element={<HomePage />} />
                 <Route path="/auth" element={<AuthPage />} />
                 <Route path="/dashboard" element={<DashboardPage />} />
-                <Route path="/add-website" element={<AlterWebsite />} />
+                <Route path="/add-website" element={<AddWebsitePage />} />
             </Routes>
         </Router>
     );
