@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import '../styles/authPage.css';
-// const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000';
-const API_BASE_URL = 'http://localhost:5000';
 
 const AuthPage: React.FC = () => {
     const [isLogin, setIsLogin] = useState(true);
@@ -12,26 +10,25 @@ const AuthPage: React.FC = () => {
     const [otp, setOtp] = useState('');
     const [otpToken, setOtpToken] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
-    const [loading, setLoading] = useState(false); // To manage loading state
+    const [loading, setLoading] = useState(false);
 
     const toggleAuthMode = () => {
         setIsLogin(!isLogin);
+        setErrorMessage(''); // Clear error messages when switching modes
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setLoading(true); // Set loading state to true
+        setLoading(true);
 
         if (isLogin) {
-            // Handle login
+            // Login flow
             try {
-                const response = await axios.post(`${API_BASE_URL}/api/auth/sign-in`, { email, password });
+                const response = await axios.post('/api/auth/login', { email, password });
 
                 if (response.data.token) {
-                    // Save the JWT token to localStorage
                     localStorage.setItem('token', response.data.token);
                     alert('Login successful!');
-                    // Redirect to dashboard or another page
                     window.location.href = '/dashboard';
                 } else {
                     setErrorMessage('Login failed. Please try again.');
@@ -40,37 +37,33 @@ const AuthPage: React.FC = () => {
                 setErrorMessage('Error logging in. Please try again.');
             }
         } else {
-            // Send the OTP to backend and get the OTP token for verification
+            // Sign-up flow: Send OTP
             try {
-                const response = await axios.post(`${API_BASE_URL}/api/auth/sign-up`, { email, password, name });
-
+                const response = await axios.post('/api/auth/sign-up', { email, password, name });
                 setOtpToken(response.data.otpToken);
                 alert('OTP sent to your email. Please enter the OTP to complete sign-up.');
             } catch (error: unknown) {
                 if (axios.isAxiosError(error)) {
-                    setErrorMessage(error.response?.data?.message || 'Error logging in.');
+                    setErrorMessage(error.response?.data?.message || 'Error sending OTP, please try again.');
                 } else {
-                    setErrorMessage('An unexpected error occurred.');
+                    setErrorMessage('An unexpected error occurred, please try again.');
                 }
             }
-
-
         }
-        setLoading(false); // Set loading state to false
+
+        setLoading(false);
     };
 
     const handleOtpSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setLoading(true); // Set loading state to true
+        setLoading(true);
 
         try {
-            const response = await axios.post(`${API_BASE_URL}/otp/verify`, { otpToken, otp });
+            const response = await axios.post('/api/otp/verify', { otpToken, otp });
 
             if (response.data.token) {
-                // Successfully signed up and received JWT token
-                localStorage.setItem('token', response.data.token); // Store the JWT token in localStorage
+                localStorage.setItem('token', response.data.token);
                 alert('Sign up successful!');
-                // Redirect to the dashboard or another page
                 window.location.href = '/dashboard';
             } else {
                 setErrorMessage('Invalid OTP.');
@@ -82,73 +75,97 @@ const AuthPage: React.FC = () => {
                 setErrorMessage('An unexpected error occurred, please try again.');
             }
         }
-        setLoading(false); // Set loading state to false
+
+        setLoading(false);
     };
 
     return (
-        <div className="auth-page-container">
-            <div className="auth-form-container">
-                <h2 className="text-3xl font-bold mb-4">{isLogin ? 'Login' : 'Sign Up'}</h2>
-                <form className="space-y-4" onSubmit={handleSubmit}>
-                    {!isLogin && (
-                        <div>
-                            <label className="block mb-1 font-medium">Name</label>
+        <div className="auth-page">
+            <div className={`container ${isLogin ? '' : 'right-panel-active'}`}>
+                <div className="form-container sign-up-container">
+                    <form onSubmit={otpToken ? handleOtpSubmit : handleSubmit}>
+                        <h1>{otpToken ? 'Verify OTP' : 'Create Account'}</h1>
+                        {!otpToken && (
+                            <>
+                                <input
+                                    type="text"
+                                    placeholder="Name"
+                                    value={name}
+                                    onChange={(e) => setName(e.target.value)}
+                                    required
+                                />
+                                <input
+                                    type="email"
+                                    placeholder="Email"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    required
+                                />
+                                <input
+                                    type="password"
+                                    placeholder="Password"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    required
+                                />
+                            </>
+                        )}
+                        {otpToken && (
                             <input
                                 type="text"
-                                className="w-full border rounded p-2"
-                                placeholder="Enter your name"
-                                value={name}
-                                onChange={(e) => setName(e.target.value)}
-                            />
-                        </div>
-                    )}
-                    <div>
-                        <label className="block mb-1 font-medium">Email</label>
-                        <input
-                            type="email"
-                            className="w-full border rounded p-2"
-                            placeholder="Enter your email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                        />
-                    </div>
-                    <div>
-                        <label className="block mb-1 font-medium">Password</label>
-                        <input
-                            type="password"
-                            className="w-full border rounded p-2"
-                            placeholder="Enter your password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                        />
-                    </div>
-                    <button type="submit" disabled={loading} className="w-full bg-blue-500 text-white py-2 rounded mt-4">
-                        {isLogin ? (loading ? 'Logging in...' : 'Login') : (loading ? 'Signing up...' : 'Sign Up')}
-                    </button>
-                </form>
-
-                {!isLogin && otpToken && (
-                    <form className="space-y-4 mt-4" onSubmit={handleOtpSubmit}>
-                        <div>
-                            <label className="block mb-1 font-medium">OTP</label>
-                            <input
-                                type="text"
-                                className="w-full border rounded p-2"
                                 placeholder="Enter OTP"
                                 value={otp}
                                 onChange={(e) => setOtp(e.target.value)}
+                                required
                             />
-                        </div>
-                        <button type="submit" disabled={loading} className="w-full bg-green-500 text-white py-2 rounded mt-4">
-                            Verify OTP
+                        )}
+                        {errorMessage && <p className="error-message">{errorMessage}</p>}
+                        <button type="submit" disabled={loading}>
+                            {loading ? 'Loading...' : otpToken ? 'Verify OTP' : 'Sign Up'}
                         </button>
-                        {errorMessage && <p className="text-red-500">{errorMessage}</p>}
                     </form>
-                )}
-
-                <button onClick={toggleAuthMode} className="mt-4 text-blue-500 underline">
-                    {isLogin ? 'Don\'t have an account? Sign Up' : 'Already have an account? Login'}
-                </button>
+                </div>
+                <div className="form-container sign-in-container">
+                    <form onSubmit={handleSubmit}>
+                        <h1>Sign in</h1>
+                        <input
+                            type="email"
+                            placeholder="Email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
+                        />
+                        <input
+                            type="password"
+                            placeholder="Password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                        />
+                        {errorMessage && <p className="error-message">{errorMessage}</p>}
+                        <button type="submit" disabled={loading}>
+                            {loading ? 'Loading...' : 'Sign In'}
+                        </button>
+                    </form>
+                </div>
+                <div className="overlay-container">
+                    <div className="overlay">
+                        <div className="overlay-panel overlay-left">
+                            <h1>Welcome Back!</h1>
+                            <p>To keep connected with us please login with your personal info</p>
+                            <button className="ghost" onClick={toggleAuthMode}>
+                                Sign In
+                            </button>
+                        </div>
+                        <div className="overlay-panel overlay-right">
+                            <h1>Hello, Friend!</h1>
+                            <p>Enter your details and start your journey with us</p>
+                            <button className="ghost" onClick={toggleAuthMode}>
+                                Sign Up
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     );
