@@ -143,3 +143,8 @@
         font-size: 0.9rem;
     }
 }
+.dashboard-page-container {
+    overflow-y: auto; /* Enables vertical scrolling */
+    overflow-x: hidden; /* Prevents horizontal scrolling */
+    height: 100vh; /* Ensures it takes full viewport height */
+}
