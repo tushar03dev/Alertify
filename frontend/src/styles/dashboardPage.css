@@ -1,63 +1,145 @@
-/* DashboardPage.css */
-
-/* Container for the entire page */
+/* Dashboard container */
 .dashboard-page-container {
-    max-width: 1200px;
+    font-family: Arial, sans-serif;
+    max-width: 800px;
     margin: 0 auto;
-    padding: 16px;
+    padding: 20px;
+    background: linear-gradient(135deg, #6a0dad, #9b5de5);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    color: #fff;
+    margin-top: 30px;
 }
 
 /* Title */
 .dashboard-title {
-    font-size: 2.5rem;
-    font-weight: bold;
+    font-size: 2rem;
+    color: #f8f0ff;
+    text-align: center;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+/* Logout container */
+.logout-container {
+    display: flex;
+    justify-content: flex-end;
     margin-bottom: 20px;
 }
 
-/* Add Website Button */
-.add-website-button {
-    background-color: #38a169; /* Tailwind green-500 */
-    color: white;
+.logout-button {
+    background-color: #9b5de5;
+    color: #fff;
     padding: 10px 20px;
+    border: none;
     border-radius: 8px;
-    font-weight: bold;
-    text-align: center;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.logout-button:hover {
+    background-color: #a768e5;
+    transform: scale(1.05);
+}
+
+/* Add Website button */
+.add-website-button {
     display: inline-block;
-    transition: background-color 0.3s ease;
+    background-color: #6a0dad;
+    color: #fff;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    text-align: center;
+    transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
 .add-website-button:hover {
-    background-color: #2f855a; /* Tailwind green-600 */
+    background-color: #8757c9;
+    transform: scale(1.05);
 }
 
-/* Websites List */
-.website-card {
-    border: 1px solid #e2e8f0; /* Light gray border */
-    padding: 16px;
+/* Website list */
+.website-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.website-item {
+    background-color: #ffffff;
+    margin-bottom: 15px;
+    padding: 15px;
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    background-color: white;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.website-url {
-    font-weight: bold;
-    font-size: 1.1rem;
-}
-
-.website-status {
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    color: #4b0082;
     font-size: 1rem;
-    color: #38a169; /* Tailwind green-500 */
 }
 
-.website-status.down {
-    color: #e53e3e; /* Tailwind red-500 */
+.website-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
 }
 
-/* Empty State */
-.no-websites {
-    font-size: 1.25rem;
-    color: #4a5568; /* Tailwind gray-600 */
+/* Website status */
+.status-up {
+    color: #2ecc71; /* Green for "up" */
+    font-weight: bold;
+}
+
+.status-down {
+    color: #e74c3c; /* Red for "down" */
+    font-weight: bold;
+}
+
+/* Error message */
+.error-message {
+    color: #ff6961;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 20px;
+}
+
+/* Loading message */
+.dashboard-page-container p {
+    text-align: center;
+    font-size: 1rem;
+    color: #d9c3ff;
+}
+/* Welcome message */
+.welcome-message {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #fff;
+    margin-right: auto; /* Push buttons to the right */
+    align-self: center;
+}
+
+/* Button group */
+.button-group {
+    display: flex;
+    gap: 10px;
+}
+
+/* Add responsive behavior */
+@media (max-width: 768px) {
+    .dashboard-page-container {
+        padding: 15px;
+    }
+
+    .dashboard-title {
+        font-size: 1.5rem;
+    }
+
+    .logout-button, .add-website-button {
+        padding: 8px 16px;
+        font-size: 0.9rem;
+    }
+
+    .website-item {
+        font-size: 0.9rem;
+    }
 }
