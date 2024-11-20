@@ -1,6 +1,7 @@
 import puppeteer from 'puppeteer';
 import validator from 'validator';
 import { Website } from '../models/websiteModel';
+import {sendAlert} from "./alertController";
 
 // Function to check the status of a single website
 export const checkSingleWebsiteStatus = async (websiteUrl: string, websiteId: string) => {
@@ -28,6 +29,9 @@ export const checkSingleWebsiteStatus = async (websiteUrl: string, websiteId: st
 
         if (response) {
             const status = response.ok() ? 'up' : 'down';
+            if(status === 'down'){
+                await sendAlert(websiteId);
+            }
             const website = await Website.findById(websiteId);
 
             if (website) {
