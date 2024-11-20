@@ -12,7 +12,7 @@ import AlterWebsite from './pages/AlterWebsite.tsx';
 const App: React.FC = () => {
     return (
         <Router>
-            {/*<NavBar />*/}
+            <NavBar />
             <Routes>
                 <Route path="/" element={<HomePage />} />
                 <Route path="/auth" element={<AuthPage />} />
