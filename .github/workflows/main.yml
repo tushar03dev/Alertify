@@ -1,0 +1,53 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+
+    strategy:
+      matrix:
+        node-version: [18.x]
+
+    steps:
+      - name: ⬇️ Checkout repository
+        uses: actions/checkout@v3
+
+      - name: 🟢 Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      # ========== Backend ==========
+      - name: 📦 Install Backend dependencies
+        working-directory: ./backend
+        run: npm install
+
+      - name: 🔒 Create .env for Backend
+        working-directory: ./backend
+        run: |
+          echo "${{ secrets.BACKEND_ENV_FILE }}" > .env
+
+      - name: 🧪 Run Backend Build / Test
+        working-directory: ./backend
+        run: |
+          npm run build    # or npm run test
+
+      # ========== Frontend ==========
+      - name: 📦 Install Frontend dependencies
+        working-directory: ./frontend
+        run: npm install
+
+      - name: 🧪 Run Frontend Build / Test
+        working-directory: ./frontend
+        run: |
+          npm run build    # or npm run test
