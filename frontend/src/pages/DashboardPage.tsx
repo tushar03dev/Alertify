@@ -51,7 +51,7 @@ const DashboardPage: React.FC = () => {
                     Authorization: `${token}`,
                 },
             });
-
+            console.log(response.data.user.name);
             setUserName(response.data.user.name || 'User'); // Set user name or fallback to 'User'
         } catch (error) {
             console.error('Error fetching user name:', error);
