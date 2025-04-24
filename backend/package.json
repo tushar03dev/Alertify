@@ -4,7 +4,8 @@
   "main": "index.js",
   "scripts": {
     "start": "node dist/server.js",
-    "dev": "nodemon --watch src --ignore src/some-large-folder --exec ts-node src/server.ts --legacy-watch"
+    "dev": "nodemon --watch src --ignore src/some-large-folder --exec ts-node src/server.ts --legacy-watch",
+    "build": "tsc"
   },
   "keywords": [],
   "author": "",
