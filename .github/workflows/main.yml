@@ -9,45 +9,46 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        shell: bash
-
-    strategy:
-      matrix:
-        node-version: [18.x]
 
     steps:
       - name: ⬇️ Checkout repository
         uses: actions/checkout@v3
 
-      - name: 🟢 Setup Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: 'npm'
+      # No global node caching here — we’ll cache per directory
 
       # ========== Backend ==========
+      - name: 🟢 Setup Node.js for Backend
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+          cache: 'npm'
+          cache-dependency-path: backend/package-lock.json
+
       - name: 📦 Install Backend dependencies
         working-directory: ./backend
-        run: npm install
+        run: npm ci
 
       - name: 🔒 Create .env for Backend
         working-directory: ./backend
         run: |
           echo "${{ secrets.BACKEND_ENV_FILE }}" > .env
 
-      - name: 🧪 Run Backend Build / Test
+      - name: 🧪 Build or Test Backend
         working-directory: ./backend
-        run: |
-          npm run build    # or npm run test
+        run: npm run build
 
       # ========== Frontend ==========
+      - name: 🟢 Setup Node.js for Frontend
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
       - name: 📦 Install Frontend dependencies
         working-directory: ./frontend
-        run: npm install
+        run: npm ci
 
-      - name: 🧪 Run Frontend Build / Test
+      - name: 🧪 Build or Test Frontend
         working-directory: ./frontend
-        run: |
-          npm run build    # or npm run test
+        run: npm run build
