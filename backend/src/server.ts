@@ -27,17 +27,17 @@ const upload = multer();
 app.use(upload.none());
 
 
-//Schedule the cron job to run every 3 minutes
-cron.schedule('*/3 * * * *', () => {
-    console.log('Checking website status...');
-    batchCheck()
-        .then(() => {
-            console.log('Batch check completed successfully.');
-        })
-        .catch((error) => {
-            console.error('Error during batch check:', error);
-        });
-});
+// //Schedule the cron job to run every 3 minutes
+// cron.schedule('*/3 * * * *', () => {
+//     console.log('Checking website status...');
+//     batchCheck()
+//         .then(() => {
+//             console.log('Batch check completed successfully.');
+//         })
+//         .catch((error) => {
+//             console.error('Error during batch check:', error);
+//         });
+// });
 
 // Connect To MongoDB
 connectDB();

@@ -26,7 +26,7 @@ const DashboardPage: React.FC = () => {
                     Authorization: `${token}`,
                 },
             });
-
+            console.log(response.data);
             setWebsites(response.data.websites);
             setError(''); // Clear previous errors if successful
         } catch (error) {
