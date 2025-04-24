@@ -24,8 +24,8 @@ const DashboardPage: React.FC = () => {
             const response = await axios.get(`${API_BASE_URL}/api/websites`, {
                 headers: {
                     Authorization: `${token}`,
-        },
-        });
+                },
+            });
 
             setWebsites(response.data.websites);
             setError(''); // Clear previous errors if successful
@@ -49,8 +49,8 @@ const DashboardPage: React.FC = () => {
             const response = await axios.get(`${API_BASE_URL}/api/user/user-profile`, {
                 headers: {
                     Authorization: `${token}`,
-        },
-        });
+                },
+            });
 
             setUserName(response.data.user.name || 'User'); // Set user name or fallback to 'User'
         } catch (error) {
@@ -97,17 +97,10 @@ const DashboardPage: React.FC = () => {
                             <li key={website._id} className="website-item">
                                 <strong>{website.websiteName}</strong>: {website.url}
                                 <p>
-                                    Status:
-                                    <span
-                                        className={website.currentStatus.status === 'up' ? 'status-up' : 'status-down'}>
-                            {website.currentStatus.status}
-                        </span>
-                                </p>
-                                <p>
-                                    SSL Status:
-                                    <span className={`ssl-${website.sslStatus.status}`}>
-                            {website.sslStatus.status}
-                        </span>
+                                    Status: <span
+                                    className={website.currentStatus.status === 'up' ? 'status-up' : 'status-down'}>
+                                        {website.currentStatus.status}
+                                    </span>
                                 </p>
                             </li>
                         ))}

@@ -1,0 +1,138 @@
+/* AlterWebsite.css */
+
+.alter-website-page-container {
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 20px;
+    background: linear-gradient(135deg, #6a0dad, #9b5de5);
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    color: #fff;
+    font-family: 'Arial', sans-serif;
+}
+
+.alter-website-title {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 20px;
+    font-weight: bold;
+    color: #f8f0ff;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.block {
+    margin-bottom: 10px;
+    display: block;
+    font-size: 1.1rem;
+    color: #d9c3ff;
+}
+
+.alter-website-input {
+    width: 96%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    background-color: #f3e8ff;
+    color: #4b0082;
+    outline: none;
+    transition: box-shadow 0.3s ease;
+}
+
+.alter-website-input:focus {
+    box-shadow: 0 0 10px 3px rgba(155, 93, 229, 0.7);
+}
+
+.button-group {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.alter-website-button {
+    flex: 1;
+    padding: 12px;
+    font-size: 1rem;
+    font-weight: bold;
+    text-align: center;
+    background-color: #8a2be2;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.alter-website-button:hover {
+    background-color: #9b5de5;
+    transform: scale(1.05);
+}
+
+.alter-website-button:disabled {
+    background-color: #7a0099;
+    cursor: not-allowed;
+}
+
+.add-button {
+    background-color: #7b68ee;
+}
+
+.add-button:hover {
+    background-color: #9370db;
+}
+
+.update-button {
+    background-color: #8a2be2;
+}
+
+.update-button:hover {
+    background-color: #9b5de5;
+}
+
+.delete-button {
+    background-color: #6a0dad;
+}
+
+.delete-button:hover {
+    background-color: #7e33a7;
+}
+
+.alter-website-message {
+    margin-top: 20px;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 1rem;
+    text-align: center;
+    font-weight: bold;
+}
+
+.success-message {
+    background-color: #b19cd9;
+    color: #4b0082;
+}
+
+.error-message {
+    background-color: #ff6961;
+    color: #fff;
+}
+
+@media (max-width: 768px) {
+    .alter-website-page-container {
+        padding: 15px;
+    }
+
+    .alter-website-title {
+        font-size: 1.5rem;
+    }
+
+    .alter-website-input {
+        padding: 10px;
+        font-size: 0.9rem;
+    }
+
+    .alter-website-button {
+        padding: 10px;
+        font-size: 0.9rem;
+    }
+}
