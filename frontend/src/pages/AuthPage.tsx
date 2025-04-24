@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import '../styles/authPage.css';
-const API_BASE_URL = 'http://localhost:5000';
+const API_BASE_URL = process.env.API_BASE_URL;
 
 const AuthPage: React.FC = () => {
     const [isLogin, setIsLogin] = useState(true);
