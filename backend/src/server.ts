@@ -9,8 +9,8 @@ import cron from 'node-cron'
 import {batchCheck} from "./controllers/batchController";
 import websiteRoutes from "./routes/websiteRoutes";
 import otpRoutes from "./routes/otpRoutes";
-
 import cors from 'cors';
+import userRoutes from "./routes/userRoutes";
 
 dotenv.config(); // Load environment variables from .env file
 
@@ -50,6 +50,9 @@ app.use('/otp',otpRoutes); // Mounts the auth routes
 
 // use the website routes
 app.use('/api',websiteRoutes); // Mounts the website routes
+
+// use the user routes
+app.use('/api/user',userRoutes); // Mounts the user routes
 
 //Error-handling middleware
 app.use((err: any, res: Response) => {
