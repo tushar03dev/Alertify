@@ -19,10 +19,7 @@ const app = express();
 // Middleware
 app.use(express.json()); // Parses incoming requests with JSON payloads
 const FRONTEND_URL = process.env.FRONTEND_URL;
-app.use(cors({
-        origin: `${FRONTEND_URL}`  // URL of your frontend on Vercel
-    }
-));
+app.use(cors());
 
 // Middleware to handle form-data
 const upload = multer();
