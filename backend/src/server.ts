@@ -18,7 +18,11 @@ const app = express();
 
 // Middleware
 app.use(express.json()); // Parses incoming requests with JSON payloads
-app.use(cors());
+const FRONTEND_URL = process.env.FRONTEND_URL;
+app.use(cors({
+        origin: `${FRONTEND_URL}`  // URL of your frontend on Vercel
+    }
+));
 
 // Middleware to handle form-data
 const upload = multer();
@@ -27,17 +31,17 @@ const upload = multer();
 app.use(upload.none());
 
 
-// //Schedule the cron job to run every 3 minutes
-// cron.schedule('*/3 * * * *', () => {
-//     console.log('Checking website status...');
-//     batchCheck()
-//         .then(() => {
-//             console.log('Batch check completed successfully.');
-//         })
-//         .catch((error) => {
-//             console.error('Error during batch check:', error);
-//         });
-// });
+//Schedule the cron job to run every 3 minutes
+cron.schedule('*/3 * * * *', () => {
+    console.log('Checking website status...');
+    batchCheck()
+        .then(() => {
+            console.log('Batch check completed successfully.');
+        })
+        .catch((error) => {
+            console.error('Error during batch check:', error);
+        });
+});
 
 // Connect To MongoDB
 connectDB();
