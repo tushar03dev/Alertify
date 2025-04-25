@@ -16,10 +16,13 @@ dotenv.config(); // Load environment variables from .env file
 
 const app = express();
 
+const FRONTEND_URL = process.env.FRONTEND_URL;
+
 // Middleware
 app.use(express.json()); // Parses incoming requests with JSON payloads
-const FRONTEND_URL = process.env.FRONTEND_URL;
-app.use(cors());
+app.use(cors({
+    origin: `${FRONTEND_URL}`,
+}));
 
 // Middleware to handle form-data
 const upload = multer();
