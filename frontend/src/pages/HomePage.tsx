@@ -19,7 +19,7 @@ const HomePage: React.FC = () => {
                     objectFit: 'cover',
                 }}
             >
-                <source src="./src/resources/background.mp4" type="video/mp4" />
+                <source src="resources/background.mp4" type="video/mp4" />
             </video>
 
             {/* Foreground Content */}
